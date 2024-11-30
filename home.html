@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="ar"> 
+ <head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>الصفحة الرئيسية - Spherely</title> 
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f2f5;
+    }
+
+    .navbar {
+      background-color: #4267B2;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      font-size: 24px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      background-color: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .post-input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .post-button {
+      width: 100%;
+      padding: 10px;
+      background-color: #4267B2;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .post-button:hover {
+      background-color: #365899;
+    }
+
+    .posts {
+      margin-top: 20px;
+    }
+
+    .post {
+      background-color: #f7f7f7;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 10px;
+      margin-bottom: 10px;
+      position: relative;
+    }
+
+    .username {
+      font-weight: bold;
+      font-size: 16px;
+      background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+      background-size: 200% auto;
+      color: white;
+      text-fill-color: transparent;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: rainbow 3s linear infinite;
+    }
+
+    @keyframes rainbow {
+      to {
+        background-position: 200% center;
+      }
+    }
+
+    .timestamp {
+      font-size: 12px;
+      color: gray;
+    }
+
+    .action-buttons {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .like-button, .dislike-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .like-button:hover, .dislike-button:hover {
+      text-decoration: underline;
+    }
+
+    .report-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      color: red;
+    }
+
+    .user-list {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .user-list .user-name {
+      background-color: #ddd;
+      padding: 5px;
+      border-radius: 5px;
+    }
+
+    .user-names-container {
+      margin-top: 5px;
+      font-size: 14px;
+      color: gray;
+    }
+  </style> 
+ </head> 
+ <body> 
+  <div class="navbar">
+    Spherely 
+  </div> 
+  <div class="container"> 
+    <textarea id="postContent" class="post-input" placeholder="اكتب منشورك هنا..."></textarea> 
+    <button id="postButton" class="post-button">نشر</button> 
+    <div id="postsContainer" class="posts"></div> 
+  </div> 
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import { getDatabase, ref, push, onValue, update } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
+    // تهيئة Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyD2i7QSJMpN_GUH44s6FCa4FPd4CcacjQU",
+      authDomain: "aslaa-aadd9.firebaseapp.com",
+      databaseURL: "https://aslaa-aadd9-default-rtdb.firebaseio.com",
+      projectId: "aslaa-aadd9",
+      storageBucket: "aslaa-aadd9.firebasestorage.app",
+      messagingSenderId: "862690377553",
+      appId: "1:862690377553:web:1addb4ee0d8b4a5f589d70",
+      measurementId: "G-RKNKL008R3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    // التحقق من تسجيل الدخول
+    const loggedIn = localStorage.getItem('loggedIn');
+    const username = localStorage.getItem('username');
+
+    if (!loggedIn || !username) {
+      alert('خطأ: يجب تسجيل الدخول للوصول إلى هذه الصفحة.');
+      window.location.href = 'login.html';
+    }
+
+    // عناصر الصفحة
+    const postButton = document.getElementById('postButton');
+    const postContent = document.getElementById('postContent');
+    const postsContainer = document.getElementById('postsContainer');
+
+    // نشر المنشور إلى Firebase
+    postButton.addEventListener('click', () => {
+      const content = postContent.value.trim();
+
+      if (content === '') {
+        alert('المنشور لا يمكن أن يكون فارغاً!');
+        return;
+      }
+
+      const postRef = ref(database, 'posts');
+      const timestamp = new Date().toISOString();
+      push(postRef, { username, content, timestamp, likes: 0, dislikes: 0, reactions: {} });
+
+      postContent.value = '';
+    });
+
+    // عرض المنشورات من Firebase
+    const postsRef = ref(database, 'posts');
+    onValue(postsRef, (snapshot) => {
+      const posts = [];
+      snapshot.forEach((childSnapshot) => {
+        const key = childSnapshot.key;
+        const postData = childSnapshot.val();
+        posts.push({ key, ...postData });
+      });
+
+      posts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+      postsContainer.innerHTML = '';
+      posts.forEach((postData) => {
+        const postElement = document.createElement('div');
+        postElement.classList.add('post');
+
+        const usernameElement = document.createElement('div');
+        usernameElement.classList.add('username');
+        usernameElement.textContent = postData.username;
+
+        const contentElement = document.createElement('div');
+        contentElement.textContent = postData.content;
+
+        const timestampElement = document.createElement('div');
+        const timestamp = new Date(postData.timestamp);
+        timestampElement.classList.add('timestamp');
+        timestampElement.textContent = `منذ ${getTimeAgo(timestamp)}`;
+
+        const actionButtons = document.createElement('div');
+        actionButtons.classList.add('action-buttons');
+
+        const hasLiked = postData.reactions?.[username] === 'like';
+        const hasDisliked = postData.reactions?.[username] === 'dislike';
+
+        const likeButton = document.createElement('button');
+        likeButton.classList.add('like-button');
+        likeButton.innerHTML = `👍 ${postData.likes} ${hasLiked ? '(إزالة الإعجاب)' : ''}`;
+        
+        // وصف زر الإعجاب لعرض أسماء المعجبين
+        likeButton.addEventListener('click', () => {
+          const postRef = ref(database, `posts/${postData.key}`);
+          if (hasLiked) {
+            update(postRef, {
+              likes: postData.likes - 1,
+              [`reactions/${username}`]: null
+            });
+          } else {
+            update(postRef, {
+              likes: postData.likes + 1,
+              dislikes: hasDisliked ? postData.dislikes - 1 : postData.dislikes,
+              [`reactions/${username}`]: 'like'
+            });
+          }
+        });
+
+        const dislikeButton = document.createElement('button');
+        dislikeButton.classList.add('dislike-button');
+        dislikeButton.innerHTML = `👎 ${postData.dislikes} ${hasDisliked ? '(إزالة عدم الإعجاب)' : ''}`;
+        
+        // وصف زر عدم الإعجاب لعرض الأسماء
+        dislikeButton.addEventListener('click', () => {
+          const postRef = ref(database, `posts/${postData.key}`);
+          if (hasDisliked) {
+            update(postRef, {
+              dislikes: postData.dislikes - 1,
+              [`reactions/${username}`]: null
+            });
+          } else {
+            update(postRef, {
+              dislikes: postData.dislikes + 1,
+              likes: hasLiked ? postData.likes - 1 : postData.likes,
+              [`reactions/${username}`]: 'dislike'
+            });
+          }
+        });
+
+        // عرض تفاعل المعجبين
+        const likedUsers = Object.keys(postData.reactions).filter(user => postData.reactions[user] === 'like');
+        const dislikedUsers = Object.keys(postData.reactions).filter(user => postData.reactions[user] === 'dislike');
+        
+        const userListElement = document.createElement('div');
+        userListElement.classList.add('user-list');
+
+        if (likedUsers.length > 0) {
+          const likedText = likedUsers.length === 1 ? `${likedUsers[0]}` : `${likedUsers[0]} وآخرون`;
+          const likedList = document.createElement('div');
+          likedList.innerHTML = `معجبون: ${likedText}`;
+          userListElement.appendChild(likedList);
+        }
+
+        if (dislikedUsers.length > 0) {
+          const dislikedText = dislikedUsers.length === 1 ? `${dislikedUsers[0]}` : `${dislikedUsers[0]} وآخرون`;
+          const dislikedList = document.createElement('div');
+          dislikedList.innerHTML = `غير معجبون: ${dislikedText}`;
+          userListElement.appendChild(dislikedList);
+        }
+
+        actionButtons.appendChild(likeButton);
+        actionButtons.appendChild(dislikeButton);
+
+        postElement.appendChild(usernameElement);
+        postElement.appendChild(contentElement);
+        postElement.appendChild(timestampElement);
+        postElement.appendChild(userListElement);
+        postElement.appendChild(actionButtons);
+
+        postsContainer.appendChild(postElement);
+      });
+    });
+
+    function getTimeAgo(date) {
+      const now = new Date();
+      const diff = Math.floor((now - date) / 1000);
+      if (diff < 60) return `${diff} ثانية`;
+      if (diff < 3600) return `${Math.floor(diff / 60)} دقيقة`;
+      if (diff < 86400) return `${Math.floor(diff / 3600)} ساعة`;
+      return `${Math.floor(diff / 86400)} يوم`;
+    }
+  </script> 
+ 
+</body></html>

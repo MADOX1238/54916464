@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نظام الاختيارات</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+      background-image: url('https://gifdb.com/images/high/incredible-sound-wave-art-hxgh3rtf5v8vvh5i.gif');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+    }
+    .options {
+      display: none;
+      margin-top: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 10px;
+      border: none;
+      text-shadow: 1px 1px 2px black;
+    }
+    #main-button {
+      background-image: url('https://i.pinimg.com/originals/97/6d/35/976d356664adb4923e7c330ef2badf38.gif');
+      background-size: cover; 
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+      font-size: 18px;
+      padding: 15px 30px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+      border: 2px solid transparent;
+      animation: pulse-border 3s infinite ease-in-out;
+    }
+    @keyframes pulse-border {
+      0% {
+        border-color: #ff5733;
+        box-shadow: 0 0 15px #ff5733;
+      }
+      25% {
+        border-color: #ffcc00;
+        box-shadow: 0 0 15px #ffcc00;
+      }
+      50% {
+        border-color: #00bfff;
+        box-shadow: 0 0 15px #00bfff;
+      }
+      75% {
+        border-color: #ff5733;
+        box-shadow: 0 0 15px #ff5733;
+      }
+      100% {
+        border-color: #ffcc00;
+        box-shadow: 0 0 15px #ffcc00;
+      }
+    }
+    #public-chat-btn {
+      background-image: url('https://www.medicoverhospitals.in/images/livechat.gif');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      padding: 20px 40px;
+      color: white;
+      font-size: 18px;
+      border-radius: 8px;
+      border: 2px solid transparent;
+      animation: pulse-border 3s infinite ease-in-out;
+      text-shadow: 1px 1px 2px black;
+    }
+    #private-room-btn {
+      background-image: url('https://64.media.tumblr.com/be9c97b9e80c2570d9167a5de6abf53c/tumblr_inline_p083duXBpC1vno92z_1280.gif');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      padding: 20px 40px;
+      color: white;
+      font-size: 18px;
+      border-radius: 8px;
+      border: 2px solid transparent;
+      animation: pulse-border 3s infinite ease-in-out;
+      text-shadow: 1px 1px 2px black;
+    }
+    #developer-button {
+      background-image: url('https://media.tenor.com/cKgOapMuyWcAAAAM/coding-developer-code.gif');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+      font-size: 18px;
+      border-radius: 8px;
+      padding: 15px 30px;
+      border: 2px solid transparent;
+      text-shadow: 1px 1px 2px black;
+      animation: pulse-border 3s infinite ease-in-out;
+    }
+    #spherely-button {
+      background-image: url('https://piziadas.com/wp-content/uploads/2012/12/noche.gif');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+      font-size: 18px;
+      border-radius: 8px;
+      padding: 15px 30px;
+      border: 2px solid transparent;
+      text-shadow: 1px 1px 2px black;
+      animation: pulse-border 3s infinite ease-in-out;
+    }
+    .name-input {
+      display: none;
+      margin-top: 20px;
+    }
+    h1 {
+      font-size: 50px;
+      color: #fff;
+      text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.6);
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      margin-bottom: 30px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .chat-logo {
+      display: inline-block;
+    }
+    .chat-logo .chat {
+      color: yellow;
+      font-weight: bold;
+    }
+    .chat-logo .sphere {
+      color: #00bfff;
+      font-weight: bold;
+    }
+    #coins {
+      font-size: 24px;
+      color: #ffcc00;
+      margin-top: 20px;
+    }
+    #timer {
+      font-size: 18px;
+      color: white;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1> <span class="chat-logo"> <span class="chat">Chat</span> <span class="sphere">Sphere</span> </span> </h1>
+  <button id="main-button">اضغط للإختيار</button>
+  <div class="options" id="options">
+    <button id="developer-button" onclick="window.location.href='developer.html'">خاص بالمطورين</button>
+    <button id="private-room-btn">إنشاء غرفة خاصة</button>
+    <button id="public-chat-btn">الدردشة العلنية</button>
+    <!-- تعديل الرابط ليؤدي إلى صفحة تسجيل الدخول الجديدة -->
+    <button id="spherely-button" onclick="window.location.href='login.html'">Spherely</button>
+  </div>
+  <div class="name-input" id="name-input">
+    <input type="text" id="username" placeholder="أدخل اسمك">
+    <button id="enter-chat-btn">دخول</button>
+  </div>
+  <div id="coins">
+    🪙 <span id="coin-count">0</span>
+  </div>
+  <div id="timer">
+    الوقت المتبقي: <span id="minute-count">2</span>:<span id="second-count">00</span>
+  </div>
+  <script>
+    const mainButton = document.getElementById('main-button');
+    const options = document.getElementById('options');
+    const publicChatBtn = document.getElementById('public-chat-btn');
+    const privateRoomBtn = document.getElementById('private-room-btn');
+    const nameInputDiv = document.getElementById('name-input');
+    const enterChatBtn = document.getElementById('enter-chat-btn');
+    const usernameInput = document.getElementById('username');
+    const coinCount = document.getElementById('coin-count');
+    const minuteCount = document.getElementById('minute-count');
+    const secondCount = document.getElementById('second-count');
+
+    let storedCoins = parseInt(localStorage.getItem('coins')) || 0;
+    let lastCoinTime = parseInt(localStorage.getItem('lastCoinTime')) || Date.now();
+    let timer = 120;
+
+    function updateCoinDisplay() {
+      coinCount.textContent = storedCoins;
+    }
+
+    function increaseCoins() {
+      const currentTime = Date.now();
+      const timeDiff = currentTime - lastCoinTime;
+      if (timeDiff >= 120000) {
+        storedCoins++;
+        localStorage.setItem('coins', storedCoins);
+        lastCoinTime = currentTime;
+        localStorage.setItem('lastCoinTime', lastCoinTime);
+        updateCoinDisplay();
+      }
+    }
+
+    setInterval(increaseCoins, 1000);
+    updateCoinDisplay();
+
+    function startTimer() {
+      setInterval(() => {
+        if (timer <= 0) {
+          storedCoins++;
+          localStorage.setItem('coins', storedCoins);
+          updateCoinDisplay();
+          timer = 120;
+        } else {
+          timer--;
+          const minutes = Math.floor(timer / 60);
+          const seconds = timer % 60;
+          minuteCount.textContent = minutes < 10 ? `0${minutes}` : minutes;
+          secondCount.textContent = seconds < 10 ? `0${seconds}` : seconds;
+        }
+      }, 1000);
+    }
+
+    startTimer();
+
+    mainButton.addEventListener('click', () => {
+      options.style.display = options.style.display === 'none' || options.style.display === '' ? 'block' : 'none';
+      nameInputDiv.style.display = 'none';
+    });
+
+    publicChatBtn.addEventListener('click', () => {
+      nameInputDiv.style.display = 'block';
+    });
+
+    enterChatBtn.addEventListener('click', () => {
+      const username = usernameInput.value.trim();
+      if (username) {
+        localStorage.setItem('username', username);
+        window.location.href = 'public-chat.html';
+      } else {
+        alert('من فضلك أدخل اسمك');
+      }
+    });
+
+    privateRoomBtn.addEventListener('click', () => {
+      if (storedCoins >= 3) {
+        storedCoins -= 3;
+        localStorage.setItem('coins', storedCoins);
+        localStorage.setItem('accessPrivateRoom', 'true');
+        updateCoinDisplay();
+        window.location.href = 'create-room.html';
+      } else {
+        alert('لا توجد لديك عملات كافية للدخول إلى غرفة خاصة تحتاج الي ثلاث عملات للدخول!');
+      }
+    });
+  </script>
+
+</body></html>

@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ar"> 
+<head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>تسجيل الدخول - Spherely</title> 
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-image: url('https://gifdb.com/images/high/incredible-sound-wave-art-hxgh3rtf5v8vvh5i.gif');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+    }
+    .login-container {
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 8px;
+      padding: 40px;
+      max-width: 400px;
+      margin: 100px auto;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+    }
+    h1 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #0078d4;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      text-align: center;
+    }
+    button:hover {
+      background-color: #005a9e;
+    }
+    .register-link {
+      margin-top: 15px;
+      font-size: 16px;
+    }
+    .register-link a {
+      color: #0078d4;
+      text-decoration: none;
+    }
+    .register-link a:hover {
+      text-decoration: underline;
+    }
+  </style> 
+</head> 
+<body> 
+  <div class="login-container"> 
+    <h1>تسجيل الدخول</h1> 
+    <form id="login-form"> 
+      <input type="text" id="username" placeholder="اسم المستخدم" required> 
+      <input type="password" id="password" placeholder="كلمة المرور" required> 
+      <button type="submit">تسجيل الدخول</button> 
+    </form> 
+    <div class="register-link"> 
+      <p>لا تملك حساب؟ <a href="register.html">إنشاء حساب جديد</a></p> 
+    </div> 
+  </div> 
+  <script type="module">
+    // استيراد Firebase SDK
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
+    // تهيئة Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyD2i7QSJMpN_GUH44s6FCa4FPd4CcacjQU",
+      authDomain: "aslaa-aadd9.firebaseapp.com",
+      databaseURL: "https://aslaa-aadd9-default-rtdb.firebaseio.com",
+      projectId: "aslaa-aadd9",
+      storageBucket: "aslaa-aadd9.firebasestorage.app",
+      messagingSenderId: "862690377553",
+      appId: "1:862690377553:web:1addb4ee0d8b4a5f589d70",
+      measurementId: "G-RKNKL008R3"
+    };
+
+    // تهيئة Firebase
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    // إرفاق حدث عند إرسال النموذج
+    const loginForm = document.getElementById('login-form');
+    loginForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      // الحصول على بيانات المستخدم من Firebase
+      const userRef = ref(database, 'users/' + username); // مسار المستخدم في Firebase
+      get(userRef)
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            const userData = snapshot.val();
+            if (userData.password === password) {
+              alert('تم تسجيل الدخول بنجاح');
+              localStorage.setItem('username', username); // تخزين اسم المستخدم
+              localStorage.setItem('loggedIn', 'true'); // تخزين حالة تسجيل الدخول
+              window.location.href = 'home.html'; // إعادة التوجيه إلى الصفحة الرئيسية
+            } else {
+              alert('كلمة المرور غير صحيحة');
+            }
+          } else {
+            alert('اسم المستخدم غير موجود');
+          }
+        })
+        .catch((error) => {
+          console.error('خطأ في الاتصال بقاعدة البيانات:', error);
+          alert('حدث خطأ أثناء تسجيل الدخول');
+        });
+    });
+  </script> 
+
+</body></html>

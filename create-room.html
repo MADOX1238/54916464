@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ar"> 
+ <head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>غرفة الدردشة الخاصة</title> 
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+      background-image: url('https://i.pinimg.com/originals/0b/59/34/0b5934b623f3c6f5377f221959d77982.gif');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      height: 100vh;
+      color: white;
+    }
+    h1 {
+      font-size: 25px; 
+      font-weight: bold;
+      letter-spacing: 1px;
+      margin-bottom: 40px;
+      color: #007bff; 
+    }
+    .highlight {
+      color: #007bff; 
+    }
+    input {
+      padding: 10px;
+      font-size: 18px;
+      width: 80%;
+      margin-bottom: 20px;
+      background-color: rgba(0, 0, 0, 0.6);
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 18px;
+      cursor: pointer;
+      margin: 10px;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    p {
+      color: red;
+      font-size: 16px;
+    }
+  </style> 
+ </head> 
+ <body> 
+  <h1>مرحباً بك قم بإنشاء <span class="highlight">غرفة دردشة خاصة بينك وبين أصدقائك</span></h1> 
+  <p>يرجى إدخال تفاصيل الغرفة:</p> 
+  <div> <label for="newRoomName">اسم الغرفة:</label> 
+   <br> 
+   <input type="text" id="newRoomName" placeholder="أدخل اسم الغرفة هنا"> 
+   <br> <label for="newRoomPassword">كلمة السر للغرفة:</label> 
+   <br> 
+   <input type="password" id="newRoomPassword" placeholder="أدخل كلمة السر هنا"> 
+   <br> <button id="registerRoomBtn">تسجيل</button> 
+  </div> 
+  <p>أو</p> 
+  <div> <label for="roomName">اسم الغرفة:</label> 
+   <br> 
+   <input type="text" id="roomName" placeholder="أدخل اسم الغرفة هنا"> 
+   <br> <label for="roomPassword">كلمة السر للغرفة:</label> 
+   <br> 
+   <input type="password" id="roomPassword" placeholder="أدخل كلمة السر هنا"> 
+   <br> <label for="username">اسم المستخدم:</label> 
+   <br> 
+   <input type="text" id="username" placeholder="أدخل اسم المستخدم هنا"> 
+   <br> <button id="createRoomBtn">تسجيل الدخول</button> 
+  </div> 
+  <p id="errorMessage" style="display: none;">كلمة السر أو اسم الغرفة غير صحيح. حاول مرة أخرى.</p> 
+  <script type="module">
+    // التحقق من الإذن المخزن في LocalStorage
+    if (localStorage.getItem('accessPrivateRoom') !== 'true') {
+      document.body.innerHTML = `
+        <h1>خطأ</h1>
+        <p style="color: red;">لا يمكنك الوصول إلى هذه الصفحة مباشرة!</p>
+        <button onclick="window.location.href='index.html'">العودة إلى الصفحة الرئيسية</button>
+      `;
+    } else {
+      // إزالة الإذن بعد الوصول الصحيح
+      localStorage.removeItem('accessPrivateRoom');
+    }
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCnHSUo_Vu53NidFWYlQ74_CyOyfVW_BqQ",
+      authDomain: "alaah-8d503.firebaseapp.com",
+      databaseURL: "https://alaah-8d503-default-rtdb.firebaseio.com",
+      projectId: "alaah-8d503",
+      storageBucket: "alaah-8d503.firebasestorage.app",
+      messagingSenderId: "365922482892",
+      appId: "1:365922482892:web:a843fbb3594d200c67e069",
+      measurementId: "G-D4TPJW4RT8"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // تسجيل غرفة جديدة
+    document.getElementById('registerRoomBtn').addEventListener('click', function() {
+      const newRoomName = document.getElementById('newRoomName').value.trim();
+      const newRoomPassword = document.getElementById('newRoomPassword').value.trim();
+
+      if (newRoomName && newRoomPassword) {
+        const roomRef = ref(db, 'rooms/' + newRoomName);
+        set(roomRef, {
+          password: newRoomPassword
+        }).then(() => {
+          alert(`تم تسجيل الغرفة: ${newRoomName}`);
+          document.getElementById('newRoomName').value = '';
+          document.getElementById('newRoomPassword').value = '';
+        }).catch((error) => {
+          alert("حدث خطأ: " + error.message);
+        });
+      } else {
+        alert("يرجى إدخال اسم الغرفة وكلمة السر");
+      }
+    });
+
+    // تسجيل الدخول إلى غرفة موجودة
+    document.getElementById('createRoomBtn').addEventListener('click', function() {
+      const roomName = document.getElementById('roomName').value.trim();
+      const roomPassword = document.getElementById('roomPassword').value.trim();
+      const username = document.getElementById('username').value.trim();
+      const errorMessage = document.getElementById('errorMessage');
+
+      const roomRef = ref(db, 'rooms/' + roomName);
+
+      get(roomRef).then((snapshot) => {
+        if (snapshot.exists()) {
+          const roomData = snapshot.val();
+          if (roomData.password === roomPassword && username) {
+            localStorage.setItem("roomName", roomName);
+            localStorage.setItem("roomPassword", roomPassword);
+            localStorage.setItem("username", username);
+            
+            window.location.href = "chat-room.html";
+          } else {
+            errorMessage.style.display = "block";
+            errorMessage.textContent = "كلمة السر أو اسم الغرفة غير صحيح. حاول مرة أخرى.";
+          }
+        } else {
+          errorMessage.style.display = "block";
+          errorMessage.textContent = "الغرفة غير موجودة. تأكد من اسم الغرفة.";
+        }
+      }).catch((error) => {
+        errorMessage.style.display = "block";
+        errorMessage.textContent = "حدث خطأ أثناء محاولة الاتصال بالخادم.";
+      });
+    });
+  </script> 
+ 
+</body></html>

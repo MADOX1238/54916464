@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إنشاء حساب جديد - Spherely</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-image: url('https://gifdb.com/images/high/incredible-sound-wave-art-hxgh3rtf5v8vvh5i.gif');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+    }
+    .login-container {
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 8px;
+      padding: 40px;
+      max-width: 400px;
+      margin: 100px auto;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+    }
+    h1 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #0078d4;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      text-align: center;
+    }
+    button:hover {
+      background-color: #005a9e;
+    }
+    .login-link {
+      margin-top: 15px;
+      font-size: 16px;
+    }
+    .login-link a {
+      color: #0078d4;
+      text-decoration: none;
+    }
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+  </style> 
+</head> 
+<body> 
+  <div class="login-container"> 
+    <h1>إنشاء حساب جديد</h1> 
+    <form id="register-form"> 
+      <input type="text" id="new-username" placeholder="اسم المستخدم" required> 
+      <input type="password" id="new-password" placeholder="كلمة المرور" required> 
+      <input type="password" id="confirm-password" placeholder="تأكيد كلمة المرور" required> 
+      <button type="submit">إنشاء حساب</button> 
+    </form> 
+    <div class="login-link"> 
+      <p>لديك حساب بالفعل؟ <a href="login.html">تسجيل الدخول</a></p> 
+    </div> 
+  </div> 
+
+  <script type="module">
+    // Import Firebase SDK
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyD2i7QSJMpN_GUH44s6FCa4FPd4CcacjQU",
+      authDomain: "aslaa-aadd9.firebaseapp.com",
+      databaseURL: "https://aslaa-aadd9-default-rtdb.firebaseio.com",
+      projectId: "aslaa-aadd9",
+      storageBucket: "aslaa-aadd9.firebasestorage.app",
+      messagingSenderId: "862690377553",
+      appId: "1:862690377553:web:1addb4ee0d8b4a5f589d70",
+      measurementId: "G-RKNKL008R3"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    // Get the form element
+    const registerForm = document.getElementById('register-form');
+    registerForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const newUsername = document.getElementById('new-username').value.trim();
+      const newPassword = document.getElementById('new-password').value.trim();
+      const confirmPassword = document.getElementById('confirm-password').value.trim();
+
+      // التحقق من تطابق كلمة المرور
+      if (newPassword === confirmPassword) {
+        // تخزين البيانات في Firebase Realtime Database
+        const newUserRef = ref(database, 'users/' + newUsername); // create a path for the user
+        set(newUserRef, {
+          username: newUsername,
+          password: newPassword // يمكن إضافة بيانات إضافية هنا
+        })
+        .then(() => {
+          alert('تم إنشاء حسابك بنجاح!');
+          window.location.href = 'login.html'; // إعادة التوجيه إلى صفحة تسجيل الدخول
+        })
+        .catch((error) => {
+          console.error('خطأ في تخزين البيانات: ', error);
+          alert('فشل في إنشاء الحساب!');
+        });
+      } else {
+        alert('كلمة المرور غير متطابقة!');
+      }
+    });
+  </script> 
+
+</body></html>

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ar"> 
+ <head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>الدخول إلى الدردشة</title> 
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+      background-image: url('https://i.pinimg.com/originals/0b/59/34/0b5934b623f3c6f5377f221959d77982.gif');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      height: 100vh;
+      color: white;
+    }
+    h1 {
+      font-size: 60px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      margin-bottom: 40px;
+    }
+    .highlight {
+      color: #28a745;
+    }
+    .highlight-blue {
+      color: #007bff;
+    }
+    input {
+      padding: 10px;
+      font-size: 18px;
+      width: 80%;
+      margin-bottom: 20px;
+      background-color: rgba(0, 0, 0, 0.6);
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    button span {
+      color: #007bff;
+    }
+    p {
+      color: red;
+      font-size: 16px;
+    }
+    .scrolling-banner {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background-color: gold;
+      color: black;
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      overflow: hidden;
+    }
+    .scrolling-banner span {
+      display: inline-block;
+      padding: 10px 0;
+      animation: scrollTextReverse 10s linear infinite;
+    }
+    @keyframes scrollTextReverse {
+      from {
+        transform: translateX(-100%);
+      }
+      to {
+        transform: translateX(100%);
+      }
+    }
+  </style> 
+ </head> 
+ <body> 
+  <h1><span class="highlight">Chat</span><span class="highlight-blue">Sphere</span></h1> 
+  <p>البيانات التي هنا خاصة بالمطورين</p> 
+  <input type="password" id="passwordInput" placeholder="أدخل كلمة السر هنا"> 
+  <br> 
+  <input type="text" id="nameInput" placeholder="أدخل اسمك هنا"> 
+  <br> <button id="loginBtn"><span>دخول</span></button> 
+  <p id="errorMessage" style="display: none;">كلمة السر غير صحيحة. حاول مرة أخرى.</p> 
+  <div class="scrolling-banner"> <span></span>الصفحة خاصة بالمطورين فقط 
+  </div> 
+  <script>
+    const correctPassword = "81102843";
+    function generateRandomColor() {
+      return '#' + Math.floor(Math.random() * 16777215).toString(16);
+    }
+    document.getElementById('loginBtn').addEventListener('click', function() {
+      const enteredPassword = document.getElementById('passwordInput').value;
+      const enteredName = document.getElementById('nameInput').value;
+      const errorMessage = document.getElementById('errorMessage');
+      if (enteredPassword === correctPassword && enteredName.trim() !== "") {
+        const userColor = generateRandomColor();
+        sessionStorage.setItem("username", enteredName.trim());
+        sessionStorage.setItem("usercolor", userColor);
+        window.location.href = "chat.html";
+      } else if (enteredName.trim() === "") {
+        errorMessage.textContent = "من فضلك أدخل اسمك.";
+        errorMessage.style.display = "block";
+      } else {
+        errorMessage.textContent = "كلمة السر غير صحيحة. حاول مرة أخرى.";
+        errorMessage.style.display = "block";
+      }
+    });
+  </script> 
+ 
+</body></html>
